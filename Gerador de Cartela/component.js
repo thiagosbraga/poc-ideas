@@ -8,17 +8,21 @@ document.addEventListener('DOMContentLoaded', function () {
   const printButton = document.getElementById('printCards');
   const fileInput = document.getElementById('fileInput');
   const cardContainer = document.getElementById('cardContainer');
+  const toast = document.getElementById('toast'); // Seleciona o elemento de toast
 
   let cards = [];
 
+  // Função para gerar um código único
   const generateUniqueCode = () => {
     return Math.random().toString(36).substr(2, 9).toUpperCase();
   };
 
+  // Função para formatar o contador
   const formatCounter = (number) => {
     return String(number).padStart(4, '0'); // Formata o contador para 4 dígitos
   };
 
+  // Função para gerar uma cartela de bingo
   const generateBingoCard = () => {
     const numbers = Array(5).fill(null).map(() => Array(5).fill(null));
     for (let col = 0; col < 5; col++) {
@@ -37,9 +41,23 @@ document.addEventListener('DOMContentLoaded', function () {
     return numbers;
   };
 
+  // Função para exibir um toast
+  const showToast = (message) => {
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000); // Duração do toast: 3 segundos
+  };
+
+  // Função para gerar as cartelas
   const generateCards = () => {
     cards = [];
     const cardCount = parseInt(cardCountInput.value, 10);
+    if (isNaN(cardCount) || cardCount <= 0) {
+      showToast("Por favor, insira uma quantidade válida de cartelas.");
+      return;
+    }
     for (let i = 0; i < cardCount; i++) {
       cards.push({
         id: generateUniqueCode(),
@@ -51,9 +69,10 @@ document.addEventListener('DOMContentLoaded', function () {
     displayCards();
     downloadButton.disabled = false;
     printButton.disabled = false;
-    alert(`${cards.length} cartelas foram geradas com sucesso.`);
+    showToast(`${cards.length} cartelas foram geradas com sucesso.`);
   };
 
+  // Função para exibir as cartelas na tela
   const displayCards = () => {
     cardContainer.innerHTML = '';
     cards.forEach(card => {
@@ -86,12 +105,13 @@ document.addEventListener('DOMContentLoaded', function () {
             `).join('')}
           </tbody>
         </table>
-        <div class="card-code">${card.id}</div> <!-- Mover o código abaixo da tabela e à esquerda -->
+        <div class="card-code">${card.id}</div> <!-- Código da cartela -->
       `;
       cardContainer.appendChild(cardElement);
     });
   };
 
+  // Função para baixar as cartelas em CSV
   const downloadCSV = () => {
     let csv = 'Contador,Código da Cartela,B1,I1,N1,G1,O1,B2,I2,N2,G2,O2,B3,I3,N3,G3,O3,B4,I4,N4,G4,O4,B5,I5,N5,G5,O5\n';
     cards.forEach(card => {
@@ -113,8 +133,10 @@ document.addEventListener('DOMContentLoaded', function () {
       link.click();
       document.body.removeChild(link);
     }
+    showToast('CSV baixado com sucesso.');
   };
 
+  // Função para carregar cartelas a partir de um arquivo CSV
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -124,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const lines = content.split('\n');
         cards = [];
 
-        for (let i = 1; i < lines.length; i++) { // Skip the header line
+        for (let i = 1; i < lines.length; i++) { // Pular a linha de cabeçalho
           const line = lines[i].trim();
           if (line) {
             const values = line.split(',');
@@ -132,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const id = values[1]; // ID da cartela
             const numbers = [];
             for (let row = 0; row < 5; row++) {
-              numbers.push(values.slice(row * 5 + 2, row * 5 + 7).map(Number));
+              numbers.push(values.slice(row * 5 + 2, row * 5 + 7).map(val => val === 'FREE' ? 'FREE' : Number(val)));
             }
             cards.push({ counter, id, numbers });
           }
@@ -142,12 +164,13 @@ document.addEventListener('DOMContentLoaded', function () {
         bingoNameInput.value = file.name.replace('.csv', '');
         downloadButton.disabled = false;
         printButton.disabled = false;
-        alert(`${cards.length} cartelas foram carregadas com sucesso.`);
+        showToast(`${cards.length} cartelas foram carregadas com sucesso.`);
       };
       reader.readAsText(file);
     }
   };
 
+  // Função para imprimir as cartelas
   const printCards = () => {
     const printWindow = window.open('', '_blank');
     if (printWindow) {
@@ -223,9 +246,11 @@ document.addEventListener('DOMContentLoaded', function () {
       `);
       printWindow.document.close();
       printWindow.print();
+      showToast('Pronto para imprimir!');
     }
   };
 
+  // Event Listeners
   generateButton.addEventListener('click', generateCards);
   downloadButton.addEventListener('click', downloadCSV);
   loadButton.addEventListener('click', () => fileInput.click());
