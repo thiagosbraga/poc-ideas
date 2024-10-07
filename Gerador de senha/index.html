@@ -171,6 +171,111 @@
             line-height: 1.6;
             color: #666666; /* Cinza mais escuro */
         }
+
+        /* Seção Sobre */
+        #sobre {
+            background-color: var(--background-color);
+            text-align: center;
+            padding: 80px 0;
+        }
+
+        .sobre-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .sobre-item {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1), 
+                        -5px -5px 15px rgba(255,255,255,0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sobre-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 80%);
+            transform: rotate(30deg);
+            transition: transform 0.5s ease;
+        }
+
+        .sobre-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 8px 8px 20px rgba(0,0,0,0.15), 
+                        -8px -8px 20px rgba(255,255,255,0.7);
+        }
+
+        .sobre-item:hover::before {
+            transform: rotate(0deg);
+        }
+
+        .sobre-item i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sobre-item h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--text-color);
+            position: relative;
+            z-index: 1;
+        }
+
+        .sobre-item p {
+            font-size: 0.9rem;
+            color: #666;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sobre-cta {
+            margin-top: 60px;
+        }
+
+        .sobre-cta h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .sobre-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -208,8 +313,32 @@
 
     <!-- Seção Sobre -->
     <section id="sobre" class="section">
-        <h2>Sobre o Gerador de Senhas</h2>
-        <p>Nosso gerador de senhas foi criado para ajudar você a criar senhas fortes e seguras, garantindo a proteção das suas contas online. Com opções de personalização, você pode escolher o comprimento da senha e gerar uma senha que atenda às suas necessidades.</p>
+        <div class="container">
+            <h2>Sobre o Gerador de Senhas</h2>
+            <div class="sobre-grid">
+                <div class="sobre-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Segurança em Primeiro Lugar</h3>
+                    <p>Nosso gerador utiliza algoritmos avançados para criar senhas altamente seguras e imprevisíveis, protegendo suas contas contra ataques de hackers.</p>
+                </div>
+                <div class="sobre-item">
+                    <i class="fas fa-random"></i>
+                    <h3>Personalização Completa</h3>
+                    <p>Escolha o comprimento da senha e os tipos de caracteres a serem incluídos, garantindo que suas senhas atendam aos requisitos específicos de cada plataforma.</p>
+                </div>
+                <div class="sobre-item">
+                    <i class="fas fa-lock"></i>
+                    <h3>Privacidade Garantida</h3>
+                    <p>Suas senhas são geradas localmente no seu dispositivo. Não armazenamos nenhuma informação, garantindo total privacidade e segurança.</p>
+                </div>
+                <div class="sobre-item">
+                    <i class="fas fa-sync-alt"></i>
+                    <h3>Atualizações Constantes</h3>
+                    <p>Nossa equipe está sempre trabalhando para melhorar o gerador, implementando as mais recentes práticas de segurança e funcionalidades úteis.</p>
+                </div>
+            </div>
+    
+        </div>
     </section>
 
     <!-- Rodapé -->
@@ -219,6 +348,58 @@
 
     <!-- JavaScript para funcionalidade -->
     <script>
+        // Listas de consoantes e vogais
+        const consoantes = 'bcdfghjklmnpqrstvwxyz';
+        const vogais = 'aeiou';
+        const numeros = '0123456789';
+        const caracteresEspeciais = '!@#$%^&*';
+
+        // Função para gerar uma sílaba (consoante + vogal)
+        function gerarSilaba() {
+            return consoantes[Math.floor(Math.random() * consoantes.length)] +
+                   vogais[Math.floor(Math.random() * vogais.length)];
+        }
+
+        // Função para gerar uma senha pronunciável
+        function gerarSenhaPronunciavel(comprimento) {
+            let senha = '';
+            let i = 0;
+
+            // Gerar sílabas até atingir o comprimento desejado
+            while (i < comprimento - 3) { // Reservamos 3 caracteres para número e caractere especial
+                senha += gerarSilaba();
+                i += 2;
+            }
+
+            // Adicionar um número
+            senha += numeros[Math.floor(Math.random() * numeros.length)];
+            i++;
+
+            // Adicionar um caractere especial
+            senha += caracteresEspeciais[Math.floor(Math.random() * caracteresEspeciais.length)];
+            i++;
+
+            // Se ainda falta comprimento, adicionar mais sílabas
+            while (i < comprimento) {
+                senha += gerarSilaba();
+                i += 2;
+            }
+
+            // Se passou do comprimento, cortar
+            if (senha.length > comprimento) {
+                senha = senha.slice(0, comprimento);
+            }
+
+            return senha;
+        }
+
+        // Função para capitalizar aleatoriamente algumas letras
+        function capitalizarAleatoriamente(senha) {
+            return senha.split('').map(char => 
+                Math.random() > 0.5 ? char.toUpperCase() : char
+            ).join('');
+        }
+
         // Atualiza o valor do comprimento da senha
         document.getElementById('comprimento').addEventListener('input', function() {
             document.getElementById('valorComprimento').textContent = this.value;
@@ -226,13 +407,9 @@
 
         // Função para gerar senha
         function gerarSenha() {
-            const comprimento = document.getElementById('comprimento').value;
-            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?';
-            let senha = '';
-            for (let i = 0; i < comprimento; i++) {
-                const index = Math.floor(Math.random() * caracteres.length);
-                senha += caracteres.charAt(index);
-            }
+            const comprimento = parseInt(document.getElementById('comprimento').value);
+            let senha = gerarSenhaPronunciavel(comprimento);
+            senha = capitalizarAleatoriamente(senha);
             document.getElementById('senha').value = senha;
         }
     </script>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Página de Namoro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            margin: 20px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        #template {
+            display: none;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        h1 {
+            color: #ff6b6b;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #contador {
+            font-size: 24px;
+            color: #ff6b6b;
+        }
+        button {
+            background-color: #ff6b6b;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #ff5252;
+        }
+
+        /* Efeito de corações */
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: red;
+            transform: rotate(-45deg);
+            animation: float 5s infinite;
+            opacity: 0.6;
+        }
+        .heart::before, .heart::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: red;
+            border-radius: 50%;
+        }
+        .heart::before {
+            top: -10px;
+            left: 0;
+        }
+        .heart::after {
+            top: 0;
+            left: 10px;
+        }
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(-45deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-200px) rotate(-45deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Personalize sua Página de Namoro</h2>
+        <form id="form">
+            <div class="form-group">
+                <label for="nome1">Nome do Parceiro 1:</label>
+                <input type="text" id="nome1" required>
+            </div>
+            <div class="form-group">
+                <label for="nome2">Nome do Parceiro 2:</label>
+                <input type="text" id="nome2" required>
+            </div>
+            <div class="form-group">
+                <label for="dataInicio">Data de Início do Namoro:</label>
+                <input type="date" id="dataInicio" required>
+            </div>
+            <div class="form-group">
+                <label for="mensagem">Mensagem Personalizada:</label>
+                <textarea id="mensagem" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="imagem">Foto do Casal:</label>
+                <input type="file" id="imagem" accept="image/*" required>
+            </div>
+            <button type="submit">Gerar Página</button>
+        </form>
+    </div>
+
+    <div class="container" id="template">
+        <h1 id="titulo">Nome1 ❤️ Nome2</h1>
+        <div id="fotoContainer" style="position:relative;">
+            <img id="foto" src="" alt="Foto do Casal">
+        </div>
+        <p id="mensagemPersonalizada"></p>
+        <div id="contador"></div>
+    </div>
+
+    <script>
+        document.getElementById('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Coletar informações do formulário
+            const nome1 = document.getElementById('nome1').value;
+            const nome2 = document.getElementById('nome2').value;
+            const dataInicio = document.getElementById('dataInicio').value;
+            const mensagem = document.getElementById('mensagem').value;
+            const imagem = document.getElementById('imagem').files[0];
+
+            // Definir o título
+            document.getElementById('titulo').textContent = `${nome1} ❤️ ${nome2}`;
+
+            // Mostrar mensagem personalizada
+            document.getElementById('mensagemPersonalizada').textContent = mensagem;
+
+            // Exibir a imagem do casal
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('foto').src = e.target.result;
+            }
+            reader.readAsDataURL(imagem);
+
+            // Calcular tempo de namoro
+            function calcularTempoNamoro(dataInicio) {
+                const dataInicioObj = new Date(dataInicio);
+                const dataAtual = new Date();
+                const tempo = dataAtual - dataInicioObj;
+
+                const dias = Math.floor(tempo / (1000 * 60 * 60 * 24));
+                const horas = Math.floor((tempo % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutos = Math.floor((tempo % (1000 * 60 * 60)) / (1000 * 60));
+                const segundos = Math.floor((tempo % (1000 * 60)) / 1000);
+
+                return `Estão juntos há: ${dias} dias, ${horas} horas, ${minutos} minutos e ${segundos} segundos.`;
+            }
+
+            function atualizarContador() {
+                document.getElementById('contador').textContent = calcularTempoNamoro(dataInicio);
+            }
+
+            // Iniciar contador
+            setInterval(atualizarContador, 1000);
+
+            // Mostrar template e esconder formulário
+            document.getElementById('form').style.display = 'none';
+            document.getElementById('template').style.display = 'block';
+
+            // Função para criar corações animados
+            function criarCoracao() {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.animationDuration = `${(Math.random() * 2) + 3}s`;
+                document.getElementById('fotoContainer').appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 5000);
+                
+            }
+
+            // Criar corações a cada segundo
+            setInterval(criarCoracao, 1000);
+        });
+    </script>
+</body>
+</html>

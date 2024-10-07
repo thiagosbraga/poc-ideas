@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Comparator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="grid">
+      <textarea id="text1" placeholder="Enter first text or list here" class="textarea"></textarea>
+      <textarea id="text2" placeholder="Enter second text or list here" class="textarea"></textarea>
+    </div>
+    <div class="button-container">
+      <button id="compareBtn">Compare</button>
+    </div>
+    <div id="results" class="grid results-grid">
+      <div class="card">
+        <h3>Original</h3>
+        <div id="originalContent" class="card-content"></div>
+      </div>
+      <div class="card">
+        <h3>Modified</h3>
+        <div id="modifiedContent" class="card-content"></div>
+      </div>
+    </div>
+    <div class="legend">
+      <p>Color Legend:</p>
+      <ul>
+        <li><span class="legend-box red"></span> Removed content (only in original)</li>
+        <li><span class="legend-box green"></span> Added content (only in modified)</li>
+        <li><span class="legend-box yellow"></span> Duplicate lines</li>
+      </ul>
+    </div>
+  </div>
+  <script src="components.js"></script>
+</body>
+</html>
