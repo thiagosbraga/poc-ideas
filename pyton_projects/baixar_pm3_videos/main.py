@@ -1,6 +1,7 @@
 import yt_dlp
 import os
 import re
+import json
 
 def criar_nome_valido(nome):
     nome_valido = re.sub(r'[^\w\-_\. ]', '_', nome)
@@ -22,27 +23,28 @@ def baixar_m3u8_video(url, output_filename):
         print(f"Erro ao baixar o vídeo M3U8: {e}")
         return None
 
-def processar_video(url):
+def processar_video(url, title):
     print(f"Processando URL: {url}")
-    nome_arquivo = criar_nome_valido("video_m3u8") + ".mp4"
+    nome_arquivo = criar_nome_valido(title) + ".mp4"
     caminho_video = baixar_m3u8_video(url, nome_arquivo)
     if caminho_video:
         print(f"Vídeo M3U8 baixado com sucesso: {caminho_video}")
     else:
         print("Não foi possível processar este vídeo devido a um erro no download.")
 
-def processar_arquivo_urls(caminho_arquivo):
-    with open(caminho_arquivo, 'r') as arquivo:
-        urls = arquivo.readlines()
+def processar_videos_json(caminho_arquivo_json):
+    with open(caminho_arquivo_json, 'r', encoding='utf-8') as file:
+        data = json.load(file)
     
-    for url in urls:
-        url = url.strip()
-        if url:
-            processar_video(url)
+    for video in data['videos']:
+        url = video.get('url')
+        title = video.get('title')
+        if url and title:
+            processar_video(url, title)
             print("\n" + "="*50 + "\n")
 
-# Caminho para o arquivo com as URLs
-caminho_arquivo_urls = "/Users/thiagobraga/lista_de_videos_m3u8.txt"
+# Caminho para o arquivo JSON com os vídeos
+caminho_arquivo_json = './videos.json'  # Ajuste o caminho conforme necessário
 
 # Executar o processamento
-processar_arquivo_urls(caminho_arquivo_urls)
+processar_videos_json(caminho_arquivo_json)
