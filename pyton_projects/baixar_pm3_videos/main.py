@@ -8,7 +8,7 @@ def criar_nome_valido(nome):
 
 def baixar_m3u8_video(url, output_filename):
     ydl_opts = {
-        'format': 'bestaudio/best[filesize<50M]',
+        'format': 'bestvideo+bestaudio/best',
         'outtmpl': output_filename,
         'verbose': True,
     }
